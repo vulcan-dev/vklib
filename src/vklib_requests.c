@@ -18,7 +18,7 @@
 #include <unistd.h>
 #endif
 
-#define BUFFER_SIZE 10340
+#define BUFFER_SIZE 1024
 
 /*-------------------------------------------------------------------------*\
 * Structures
@@ -185,7 +185,7 @@ int request_get(lua_State* L) {
 	char* path = parse_path(url);
 	int port = get_port(url);
 
-    char buffer[BUFFER_SIZE];
+    char* buffer = (char*)malloc(BUFFER_SIZE);
     char request[512];
 
     char request_template[] = "GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36\r\n\r\n";
@@ -240,13 +240,31 @@ int request_get(lua_State* L) {
 		return 2;
 	}
 
-	bytes_received = recv(sockfd, buffer, BUFFER_SIZE, 0);
-	if (bytes_received < 0) {
-		win_cleanup();
-		lua_pushnil(L);
-		lua_pushstring(L, "Could not receive response.");
-		return 2;
-	}
+	int status = 0;
+	int cur_size = 0;
+
+	do {
+		if (bytes_received >= cur_size) {
+			char* tmp = (char*)realloc(buffer, cur_size + BUFFER_SIZE);
+			if (tmp == NULL) {
+				win_cleanup();
+				lua_pushnil(L);
+				lua_pushstring(L, "Could not allocate memory.");
+				return 2;
+			}
+			buffer = tmp;
+			cur_size += BUFFER_SIZE;
+		}
+		
+		status = recv(sockfd, buffer + bytes_received, cur_size - bytes_received, 0);
+		if (status < 0) {
+			win_cleanup();
+			lua_pushnil(L);
+			lua_pushstring(L, "Could not receive response.");
+			return 2;
+		}
+		bytes_received += status;
+	} while (status > 0);
 
 	win_cleanup();
 
@@ -326,9 +344,15 @@ int request_get(lua_State* L) {
 	lua_pushstring(L, "code");
 	lua_pushstring(L, response_code);
 	lua_settable(L, -3);
+	
 	lua_pushstring(L, "body");
 	lua_pushlstring(L, body, strlen(body));
 	lua_settable(L, -3);
+
+	lua_pushstring(L, "bytes_received");
+	lua_pushinteger(L, bytes_received);
+	lua_settable(L, -3);
+
 	lua_pushstring(L, "headers");
 	lua_newtable(L);
 	for (int i = 0; i < headers_array_length; i++) {

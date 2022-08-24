@@ -7,10 +7,8 @@ if not req then
     return
 end
 
-print("content-type: " .. req.headers["content-type"])
+for k, v in pairs(req.headers) do
+    print(k .. " = " .. v)
+end
 
--- for k, v in pairs(req.headers) do
---     print(k .. " = " .. v)
--- end
-
-print('\n' .. req.body)
+print("\nbody:\n" .. req.body)
