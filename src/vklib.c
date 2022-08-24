@@ -31,7 +31,13 @@ static int base_open(lua_State* L) {
     return 1;
 }
 
+void Segfault_Handler(int signo) {
+     fprintf(stderr,"\n[!] Oops! Segmentation fault...\n");
+}
+
 VKLIB_API int luaopen_vklib(lua_State* L) {
+    signal(SIGSEGV, Segfault_Handler);
+
     base_open(L);
     return 1;
 }
