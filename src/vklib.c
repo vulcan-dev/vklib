@@ -1,6 +1,7 @@
 #include "vklib.h"
 #include "vklib_fs.h"
 #include "vklib_requests.h"
+#include "vklib_sqlite.h"
 
 static const luaL_Reg fs_funcs[] = {
     { "get_cwd", fs_getcwd },
@@ -12,6 +13,11 @@ static const luaL_Reg fs_funcs[] = {
 
 static const luaL_Reg request_funcs[] = {
     { "get", request_get },
+    { NULL, NULL }
+};
+
+static const luaL_Reg sqlite_funcs[] = {
+    { "connect", sqlite_connect },
     { NULL, NULL }
 };
 
@@ -27,6 +33,9 @@ static int base_open(lua_State* L) {
 
     luaL_newlib(L, request_funcs);
     lua_setfield(L, -2, "request");
+
+    luaL_newlib(L, sqlite_funcs);
+    lua_setfield(L, -2, "sqlite");
 
     return 1;
 }
