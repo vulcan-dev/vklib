@@ -18,7 +18,7 @@
 #include <unistd.h>
 #endif
 
-#define BUFFER_SIZE 10240
+#define BUFFER_SIZE 10340
 
 /*-------------------------------------------------------------------------*\
 * Structures
@@ -26,7 +26,12 @@
 typedef struct t_header {
 	char* key;
 	char* value;
+	struct t_header* next;
 } t_header;
+
+typedef struct t_header_arr {
+    t_header* header;
+} t_header_arr;
 
 /*-------------------------------------------------------------------------*\
 * Helpers
@@ -76,6 +81,12 @@ t_header* get_header(const char* str) {
     if (header->key == NULL || header->value == NULL) {
 		printf("Error: header key or value is null\n");
         return NULL;
+	}
+
+	// check if the key is valid
+	if (header->key[0] == ' ' || header->key[0] == '\t' || header->key[0] == '\n'
+		|| header->value[0] == ' ' || header->value[0] == '\t' || header->value[0] == '\n') {
+		return NULL;
 	}
     
     return header;
@@ -247,6 +258,10 @@ int request_get(lua_State* L) {
 	int is_header = 1;
 	int header_length = 0;
 	int body_length = 0;
+
+	t_header_arr* headers_array = (t_header_arr*)malloc(sizeof(t_header_arr) * 32);
+	int headers_array_length = 0;
+
 	do {
 		if (line == NULL) {
 			break;
@@ -255,6 +270,18 @@ int request_get(lua_State* L) {
 		t_header* header = get_header(line);
 		if (header == NULL) {
 			is_header = 0;
+		} else {
+			// convert key to lowercase
+			char* key = header->key;
+			int key_length = strlen(key);
+			for (int i = 0; i < key_length; i++) {
+				key[i] = tolower(key[i]);
+			}
+
+			headers_array[headers_array_length].header = malloc(sizeof(t_header));
+			memcpy(headers_array[headers_array_length].header, header, sizeof(t_header));
+			headers_array[headers_array_length].header->key = key;
+			headers_array_length++;
 		}
 		free(header);
 
@@ -298,9 +325,15 @@ int request_get(lua_State* L) {
 	lua_pushlstring(L, body, strlen(body));
 	lua_settable(L, -3);
 	lua_pushstring(L, "headers");
-	lua_pushlstring(L, headers, strlen(headers));
+	lua_newtable(L);
+	for (int i = 0; i < headers_array_length; i++) {
+		lua_pushstring(L, headers_array[i].header->key);
+		lua_pushstring(L, headers_array[i].header->value);
+		lua_settable(L, -3);
+	}
 	lua_settable(L, -3);
 
+	free(headers_array);
 	free(headers);
 	free(body);
 
