@@ -57,13 +57,13 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>VKLIB_FILESYSTEM;VKLIB_REQUESTS;VKLIB_SQLITE;VKLIB_MONGO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dep\lua\include;dep\sqlite\include;dep\mongodb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VKLIB_FILESYSTEM;VKLIB_REQUESTS;VKLIB_SQLITE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>dep\lua\include;dep\sqlite\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>lua.lib;ws2_32.lib;mongoc-1.0.lib;bson-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dep\lua\lib;dep\mongodb\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>build\bin\vklib.lib</ImportLibrary>
     </Link>
@@ -72,8 +72,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>VKLIB_FILESYSTEM;VKLIB_REQUESTS;VKLIB_SQLITE;VKLIB_MONGO;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dep\lua\include;dep\sqlite\include;dep\mongodb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VKLIB_FILESYSTEM;VKLIB_REQUESTS;VKLIB_SQLITE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>dep\lua\include;dep\sqlite\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -86,7 +86,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>lua.lib;ws2_32.lib;mongoc-1.0.lib;bson-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dep\lua\lib;dep\mongodb\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>build\bin\vklib.lib</ImportLibrary>
     </Link>
@@ -96,7 +96,6 @@
     <ClInclude Include="src\vklib.h" />
     <ClInclude Include="src\vklib_compat.h" />
     <ClInclude Include="src\vklib_fs.h" />
-    <ClInclude Include="src\vklib_mongo\common.h" />
     <ClInclude Include="src\vklib_requests.h" />
     <ClInclude Include="src\vklib_sqlite.h" />
   </ItemGroup>
@@ -104,20 +103,6 @@
     <ClCompile Include="src\vklib.c" />
     <ClCompile Include="src\vklib_compat.c" />
     <ClCompile Include="src\vklib_fs.c" />
-    <ClCompile Include="src\vklib_mongo\bson.c" />
-    <ClCompile Include="src\vklib_mongo\bsontype.c" />
-    <ClCompile Include="src\vklib_mongo\bulkoperation.c" />
-    <ClCompile Include="src\vklib_mongo\client.c" />
-    <ClCompile Include="src\vklib_mongo\collection.c" />
-    <ClCompile Include="src\vklib_mongo\cursor.c" />
-    <ClCompile Include="src\vklib_mongo\database.c" />
-    <ClCompile Include="src\vklib_mongo\flags.c" />
-    <ClCompile Include="src\vklib_mongo\gridfs.c" />
-    <ClCompile Include="src\vklib_mongo\gridfsfile.c" />
-    <ClCompile Include="src\vklib_mongo\gridfsfilelist.c" />
-    <ClCompile Include="src\vklib_mongo\objectid.c" />
-    <ClCompile Include="src\vklib_mongo\readprefs.c" />
-    <ClCompile Include="src\vklib_mongo\util.c" />
     <ClCompile Include="src\vklib_requests.c" />
     <ClCompile Include="src\vklib_sqlite.c" />
   </ItemGroup>

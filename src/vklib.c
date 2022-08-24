@@ -95,7 +95,6 @@ static const luaL_Reg funcs[] = {
 
 char NEW_BINARY, NEW_DATETIME, NEW_DECIMAL128, NEW_JAVASCRIPT, NEW_REGEX, NEW_TIMESTAMP;
 char GLOBAL_MAXKEY, GLOBAL_MINKEY, GLOBAL_NULL;
-#endif
 
 static int mongo_open(lua_State* L) {
 #if LUA_VERSION_NUM < 502
@@ -136,6 +135,7 @@ static int mongo_open(lua_State* L) {
 	mongoc_init();
 	return 1;
 }
+#endif
 
 void Segfault_Handler(int signo) {
      fprintf(stderr,"\n[!] Oops! Segmentation fault...\n");
