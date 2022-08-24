@@ -29,6 +29,10 @@
 #define S_ISREG(mode)  (((mode) & S_IFMT) == S_IFREG)
 #endif
 
+#ifndef S_ISDIR
+#define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
+#endif
+
 /*-------------------------------------------------------------------------*\
 * Compatibility functions
 \*-------------------------------------------------------------------------*/
@@ -156,6 +160,19 @@ int fs_remove_dir(lua_State* L) {
 }
 
 /*
+    * Checks if a directory exists
+    * @param path - the path of the directory to check
+    * @return true if the directory exists, nil & error message otherwise
+*/
+int fs_dir_exists(lua_State* L) {
+    const char* path = luaL_checkstring(L, 1);
+    struct stat buf;
+    int exists = stat(path, &buf) == 0;
+    lua_pushboolean(L, exists);
+    return 1;
+}
+
+/*
     * Creates a file
     * @param path - the path of the file to create
     * @param contents - the contents of the file (optional)
@@ -180,5 +197,34 @@ int fs_create_file(lua_State* L) {
     fclose(file);
 
     lua_pushboolean(L, 1);
+    return 1;
+}
+
+/*
+    * Removes a file
+    * @param path - the path of the file to remove
+    * @return true if successful, nil & error message otherwise
+*/
+int fs_remove_file(lua_State* L) {
+    const char* path = luaL_checkstring(L, 1);
+    if (remove(path) != 0) {
+        lua_pushnil(L);
+        lua_pushstring(L, get_error("remove", errno));
+        return 2;
+    }
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
+/*
+    * Checks if a file exists
+    * @param path - the path of the file to check
+    * @return true if the file exists, nil & error message otherwise
+*/
+int fs_file_exists(lua_State* L) {
+    const char* path = luaL_checkstring(L, 1);
+    int exists = is_file(path);
+
+    lua_pushboolean(L, exists);
     return 1;
 }
