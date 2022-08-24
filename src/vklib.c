@@ -35,14 +35,22 @@ static const luaL_Reg sqlite_funcs[] = {
 
 #ifdef VKLIB_MONGODB
 #include "vklib_mongo.h"
+#include "mongoc.h"
 static const luaL_Reg mongodb_funcs[] = {
     { "new_client", mongo_new_client },
-    { "get_database", mongo_get_database },
-    { "destroy_database", mongo_destroy_database },
-    { "destroy_client", mongo_destroy_client },
+    //{ "destroy_client", mongo_destroy_client },
+    //{ "get_database", mongo_get_database },
+    //{ "destroy_database", mongo_destroy_database },
     { NULL, NULL }
 };
 #endif
+
+int gc_destroy(lua_State* L) {
+    #ifdef VKLIB_MONGODB
+    mongoc_cleanup();
+    #endif
+    return 0;
+}
 
 static int base_open(lua_State* L) {
     lua_newtable(L);
@@ -71,6 +79,11 @@ static int base_open(lua_State* L) {
     lua_setfield(L, -2, "mongodb");
     #endif
 
+    lua_newtable(L);
+    lua_pushcfunction(L, gc_destroy);
+    lua_setfield(L, -2, "__gc");
+    lua_setmetatable(L, -2);
+
     return 1;
 }
 
@@ -81,35 +94,9 @@ void Segfault_Handler(int signo) {
 VKLIB_API int luaopen_vklib(lua_State* L) {
     signal(SIGSEGV, Segfault_Handler);
 
-    // TEST_MONGODB
- //   mongoc_database_t* database;
- //   mongoc_client_t* client;
-
- //   mongoc_init();
-
-	//client = mongoc_client_new("mongodb://localhost:27017");
-	//database = mongoc_client_get_database(client, "vklib_mongo");
-
- //   // execute "SELECT * FROM users"
- //   mongoc_collection_t* collection = mongoc_database_get_collection(database, "users");
- //   mongoc_cursor_t* cursor = mongoc_collection_find(collection, MONGOC_QUERY_NONE, 0, 0, 0, NULL, NULL);
- //   const bson_t* doc;
- //   while (mongoc_cursor_next(cursor, &doc)) {
- //       bson_iter_t iter;
- //       if (bson_iter_init(&iter, doc)) {
- //           while (bson_iter_next(&iter)) {
- //               printf("%s: %s\n", bson_iter_key(&iter), bson_iter_value(&iter));
- //           }
- //       }
- //   }
-
- //   mongoc_cursor_destroy(cursor);
- //   mongoc_collection_destroy(collection);
-	//mongoc_database_destroy(database);
-	//mongoc_client_destroy(client);
-
- //   mongoc_cleanup();
-    ///////////////
+#ifdef VKLIB_MONGODB
+    mongoc_init();
+#endif
 
     base_open(L);
     return 1;
