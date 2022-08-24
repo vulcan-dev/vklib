@@ -96,11 +96,13 @@
     <ClInclude Include="src\vklib.h" />
     <ClInclude Include="src\vklib_compat.h" />
     <ClInclude Include="src\vklib_fs.h" />
+    <ClInclude Include="src\vklib_requests.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\vklib.c" />
     <ClCompile Include="src\vklib_compat.c" />
     <ClCompile Include="src\vklib_fs.c" />
+    <ClCompile Include="src\vklib_requests.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

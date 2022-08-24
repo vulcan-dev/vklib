@@ -1,11 +1,17 @@
 #include "vklib.h"
 #include "vklib_fs.h"
+#include "vklib_requests.h"
 
 static const luaL_Reg fs_funcs[] = {
     { "get_cwd", fs_getcwd },
     { "create_dir", fs_create_dir },
     { "remove_dir", fs_remove_dir },
     { "create_file", fs_create_file },
+    { NULL, NULL }
+};
+
+static const luaL_Reg request_funcs[] = {
+    { "get", request_get },
     { NULL, NULL }
 };
 
@@ -18,6 +24,9 @@ static int base_open(lua_State* L) {
 
     luaL_newlib(L, fs_funcs);
     lua_setfield(L, -2, "fs");
+
+    luaL_newlib(L, request_funcs);
+    lua_setfield(L, -2, "request");
 
     return 1;
 }
