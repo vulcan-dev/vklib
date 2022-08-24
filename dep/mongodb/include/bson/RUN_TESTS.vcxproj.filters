@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Development\C\mongo-c-driver-1.22.1\CMakeFiles\9fe69ef19e12e9b7004147b2737a1013\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{559BE9FE-A9ED-3999-9211-6079EB6C81B4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -24,7 +24,7 @@ static const luaL_Reg request_funcs[] = {
 
 #ifdef VKLIB_SQLITE
 #include "vklib_sqlite.h"
-#include "sqlite3.h"
+// #include "sqlite3.h"
 static const luaL_Reg sqlite_funcs[] = {
     { "open", sqlite_open },
     { "close", sqlite_close },
@@ -32,6 +32,26 @@ static const luaL_Reg sqlite_funcs[] = {
     { NULL, NULL }
 };
 #endif
+
+#ifdef VKLIB_MONGO
+// #include "vklib_mongo.h"
+#include "mongoc.h"
+#include "vklib_mongo/common.h"
+// static const luaL_Reg mongodb_funcs[] = {
+    // { "new_client", mongo_new_client },
+    //{ "destroy_client", mongo_destroy_client },
+    //{ "get_database", mongo_get_database },
+    //{ "destroy_database", mongo_destroy_database },
+    // { NULL, NULL }
+// };
+#endif
+
+int gc_destroy(lua_State* L) {
+    #ifdef VKLIB_MONGO
+    mongoc_cleanup();
+    #endif
+    return 0;
+}
 
 static int base_open(lua_State* L) {
     lua_newtable(L);
@@ -55,7 +75,84 @@ static int base_open(lua_State* L) {
     lua_setfield(L, -2, "sqlite");
     #endif
 
+    // #ifdef VKLIB_MONGO
+    // luaL_newlib(L, mongodb_funcs);
+    // lua_setfield(L, -2, "mongodb");
+    // #endif
+
+    lua_newtable(L);
+    lua_pushcfunction(L, gc_destroy);
+    lua_setfield(L, -2, "__gc");
+    lua_setmetatable(L, -2);
+
     return 1;
+}
+
+static int f_type(lua_State *L) {
+	luaL_checkany(L, 1);
+	lua_pushstring(L, typeName(L, 1));
+	return 1;
+}
+
+static const luaL_Reg funcs[] = {
+	{"type", f_type},
+	{"Binary", newBinary},
+	{"BSON", newBSON},
+	{"Client", newClient},
+	{"DateTime", newDateTime},
+	{"Decimal128", newDecimal128},
+	{"Double", newDouble},
+	{"Int32", newInt32},
+	{"Int64", newInt64},
+	{"Javascript", newJavascript},
+	{"ObjectID", newObjectID},
+	{"ReadPrefs", newReadPrefs},
+	{"Regex", newRegex},
+	{"Timestamp", newTimestamp},
+	{0, 0}
+};
+
+char NEW_BINARY, NEW_DATETIME, NEW_DECIMAL128, NEW_JAVASCRIPT, NEW_REGEX, NEW_TIMESTAMP;
+char GLOBAL_MAXKEY, GLOBAL_MINKEY, GLOBAL_NULL;
+
+static int mongo_open(lua_State* L) {
+#if LUA_VERSION_NUM < 502
+	luaL_register(L, "mongo", funcs);
+#else
+	luaL_newlib(L, funcs);
+    lua_setfield(L, -2, "mongo");
+#endif
+
+	/* Cache BSON type constructors for quick access */
+	lua_getfield(L, -1, "Binary");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &NEW_BINARY);
+	lua_getfield(L, -1, "DateTime");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &NEW_DATETIME);
+	lua_getfield(L, -1, "Decimal128");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &NEW_DECIMAL128);
+	lua_getfield(L, -1, "Javascript");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &NEW_JAVASCRIPT);
+	lua_getfield(L, -1, "Regex");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &NEW_REGEX);
+	lua_getfield(L, -1, "Timestamp");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &NEW_TIMESTAMP);
+
+	/* Create BSON type singletons */
+	pushMaxKey(L);
+	lua_pushvalue(L, -1);
+	lua_setfield(L, -3, "MaxKey");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &GLOBAL_MAXKEY);
+	pushMinKey(L);
+	lua_pushvalue(L, -1);
+	lua_setfield(L, -3, "MinKey");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &GLOBAL_MINKEY);
+	pushNull(L);
+	lua_pushvalue(L, -1);
+	lua_setfield(L, -3, "Null");
+	lua_rawsetp(L, LUA_REGISTRYINDEX, &GLOBAL_NULL);
+
+	mongoc_init();
+	return 1;
 }
 
 void Segfault_Handler(int signo) {
@@ -66,5 +163,10 @@ VKLIB_API int luaopen_vklib(lua_State* L) {
     signal(SIGSEGV, Segfault_Handler);
 
     base_open(L);
+
+#ifdef VKLIB_MONGO
+    mongoc_init();
+    mongo_open(L);
+#endif
     return 1;
 }

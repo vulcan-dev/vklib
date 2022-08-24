@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="vklib_mongo">
+      <UniqueIdentifier>{9C7D687D-0833-E172-9127-DB49FDDBD776}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\dirent.h" />
+    <ClInclude Include="src\vklib.h" />
+    <ClInclude Include="src\vklib_compat.h" />
+    <ClInclude Include="src\vklib_fs.h" />
+    <ClInclude Include="src\vklib_mongo.h" />
+    <ClInclude Include="src\vklib_mongo\common.h">
+      <Filter>vklib_mongo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vklib_requests.h" />
+    <ClInclude Include="src\vklib_sqlite.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\vklib.c" />
+    <ClCompile Include="src\vklib_compat.c" />
+    <ClCompile Include="src\vklib_fs.c" />
+    <ClCompile Include="src\vklib_mongo.c" />
+    <ClCompile Include="src\vklib_mongo\bson.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\bsontype.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\bulkoperation.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\client.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\collection.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\cursor.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\database.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\flags.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\gridfs.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\gridfsfile.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\gridfsfilelist.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\objectid.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\readprefs.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo\util.c">
+      <Filter>vklib_mongo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_requests.c" />
+    <ClCompile Include="src\vklib_sqlite.c" />
+  </ItemGroup>
+</Project>
