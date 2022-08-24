@@ -24,7 +24,6 @@ static const luaL_Reg request_funcs[] = {
 
 #ifdef VKLIB_SQLITE
 #include "vklib_sqlite.h"
-// #include "sqlite3.h"
 static const luaL_Reg sqlite_funcs[] = {
     { "open", sqlite_open },
     { "close", sqlite_close },
@@ -33,23 +32,7 @@ static const luaL_Reg sqlite_funcs[] = {
 };
 #endif
 
-#ifdef VKLIB_MONGO
-// #include "vklib_mongo.h"
-#include "mongoc.h"
-#include "vklib_mongo/common.h"
-// static const luaL_Reg mongodb_funcs[] = {
-    // { "new_client", mongo_new_client },
-    //{ "destroy_client", mongo_destroy_client },
-    //{ "get_database", mongo_get_database },
-    //{ "destroy_database", mongo_destroy_database },
-    // { NULL, NULL }
-// };
-#endif
-
-int gc_destroy(lua_State* L) {
-    #ifdef VKLIB_MONGO
-    mongoc_cleanup();
-    #endif
+static int gc_destroy(lua_State* L) {
     return 0;
 }
 
@@ -75,11 +58,6 @@ static int base_open(lua_State* L) {
     lua_setfield(L, -2, "sqlite");
     #endif
 
-    // #ifdef VKLIB_MONGO
-    // luaL_newlib(L, mongodb_funcs);
-    // lua_setfield(L, -2, "mongodb");
-    // #endif
-
     lua_newtable(L);
     lua_pushcfunction(L, gc_destroy);
     lua_setfield(L, -2, "__gc");
@@ -87,6 +65,9 @@ static int base_open(lua_State* L) {
 
     return 1;
 }
+
+#ifdef VKLIB_MONGO
+#include "vklib_mongo/common.h"
 
 static int f_type(lua_State *L) {
 	luaL_checkany(L, 1);
@@ -96,24 +77,25 @@ static int f_type(lua_State *L) {
 
 static const luaL_Reg funcs[] = {
 	{"type", f_type},
-	{"Binary", newBinary},
-	{"BSON", newBSON},
-	{"Client", newClient},
-	{"DateTime", newDateTime},
-	{"Decimal128", newDecimal128},
-	{"Double", newDouble},
-	{"Int32", newInt32},
-	{"Int64", newInt64},
-	{"Javascript", newJavascript},
-	{"ObjectID", newObjectID},
-	{"ReadPrefs", newReadPrefs},
-	{"Regex", newRegex},
-	{"Timestamp", newTimestamp},
+	{"binary", newBinary},
+	{"bson", newBSON},
+	{"client", newClient},
+	{"date_time", newDateTime},
+	{"decimal128", newDecimal128},
+	{"double", newDouble},
+	{"int32", newInt32},
+	{"int64", newInt64},
+	{"javascript", newJavascript},
+	{"objectid", newObjectID},
+	{"readprefs", newReadPrefs},
+	{"regex", newRegex},
+	{"timestamp", newTimestamp},
 	{0, 0}
 };
 
 char NEW_BINARY, NEW_DATETIME, NEW_DECIMAL128, NEW_JAVASCRIPT, NEW_REGEX, NEW_TIMESTAMP;
 char GLOBAL_MAXKEY, GLOBAL_MINKEY, GLOBAL_NULL;
+#endif
 
 static int mongo_open(lua_State* L) {
 #if LUA_VERSION_NUM < 502

@@ -13,10 +13,7 @@ project "vklib"
 
     links { "lua", "ws2_32", "mongoc-1.0", "bson-1.0" }
 
-    files { 
-        "src/**.h", "src/**.c",
-        -- "dep/mongodb/src/**.h", "dep/mongodb/src/**.c",
-    }
+    files {  "src/**.h", "src/**.c", }
 
     defines { "VKLIB_FILESYSTEM", "VKLIB_REQUESTS", "VKLIB_SQLITE", "VKLIB_MONGO" }
 

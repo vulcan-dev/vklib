@@ -10,7 +10,6 @@
     <ClInclude Include="src\vklib.h" />
     <ClInclude Include="src\vklib_compat.h" />
     <ClInclude Include="src\vklib_fs.h" />
-    <ClInclude Include="src\vklib_mongo.h" />
     <ClInclude Include="src\vklib_mongo\common.h">
       <Filter>vklib_mongo</Filter>
     </ClInclude>
@@ -21,7 +20,6 @@
     <ClCompile Include="src\vklib.c" />
     <ClCompile Include="src\vklib_compat.c" />
     <ClCompile Include="src\vklib_fs.c" />
-    <ClCompile Include="src\vklib_mongo.c" />
     <ClCompile Include="src\vklib_mongo\bson.c">
       <Filter>vklib_mongo</Filter>
     </ClCompile>
