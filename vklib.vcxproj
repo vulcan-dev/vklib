@@ -57,7 +57,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>dep\lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dep\lua\include;dep\sqlite\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
@@ -65,7 +65,6 @@
       <AdditionalDependencies>lua.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dep\lua\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>build\bin\vklib.lib</ImportLibrary>
-      <EntryPointSymbol>luaopen_vklib</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -73,7 +72,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>dep\lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>dep\lua\include;dep\sqlite\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -96,11 +95,15 @@
     <ClInclude Include="src\vklib.h" />
     <ClInclude Include="src\vklib_compat.h" />
     <ClInclude Include="src\vklib_fs.h" />
+    <ClInclude Include="src\vklib_requests.h" />
+    <ClInclude Include="src\vklib_sqlite.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\vklib.c" />
     <ClCompile Include="src\vklib_compat.c" />
     <ClCompile Include="src\vklib_fs.c" />
+    <ClCompile Include="src\vklib_requests.c" />
+    <ClCompile Include="src\vklib_sqlite.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
