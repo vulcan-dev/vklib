@@ -349,10 +349,6 @@ int request_get(lua_State* L) {
 	lua_pushlstring(L, body, strlen(body));
 	lua_settable(L, -3);
 
-	lua_pushstring(L, "bytes_received");
-	lua_pushinteger(L, bytes_received);
-	lua_settable(L, -3);
-
 	lua_pushstring(L, "headers");
 	lua_newtable(L);
 	for (int i = 0; i < headers_array_length; i++) {
