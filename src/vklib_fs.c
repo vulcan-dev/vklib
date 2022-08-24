@@ -25,26 +25,9 @@
 /*-------------------------------------------------------------------------*\
 * Definitions
 \*-------------------------------------------------------------------------*/
-#ifndef S_ISDIR
-#define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
-#endif
-
 #ifndef S_ISREG
 #define S_ISREG(mode)  (((mode) & S_IFMT) == S_IFREG)
 #endif
-
-#define S_IRUSR 0400
-#define S_IREAD S_IRUSR
-#define S_IWUSR 0200
-#define S_IWRITE S_IWUSR
-#define S_IXUSR 0100
-#define S_IRWXU (S_IREAD | S_IWRITE | S_IXUSR)
-#define S_IRGRP 0040
-#define S_IWGRP 0020
-#define S_IXGRP 0010
-#define S_IRWXG (S_IRGRP | S_IWGRP | S_IXGRP)
-#define S_IROTH 0004
-#define S_IXOTH 0001
 
 /*-------------------------------------------------------------------------*\
 * Compatibility functions
@@ -137,13 +120,13 @@ int fs_create_dir(lua_State* L) {
             }
         }
         
-        if (_compat_mkdir(path, S_IRWXU) != 0) {
+        if (_compat_mkdir(path, S_IWUSR) != 0) {
             lua_pushnil(L);
             lua_pushstring(L, get_error("mkdir", errno));
             return 2;
         }
     } else {
-        if (_compat_mkdir(path, S_IRWXU) != 0) {
+        if (_compat_mkdir(path, S_IWUSR) != 0) {
             lua_pushnil(L);
             lua_pushstring(L, get_error("mkdir", errno));
             return 2;
