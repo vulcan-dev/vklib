@@ -9,7 +9,7 @@ project "vklib"
     architecture "x86_64"
 
     libdirs "dep/lua/lib"
-    includedirs "dep/lua/include"
+    includedirs { "dep/lua/include", "dep/sqlite/include" }
 
     links { "lua", "ws2_32" }
 
