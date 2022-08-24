@@ -15,6 +15,8 @@ project "vklib"
 
     files { "src/**.h", "src/**.c" }
 
+    defines { "VKLIB_FILESYSTEM", "VKLIB_REQUESTS", "VKLIB_SQLITE" }
+
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
