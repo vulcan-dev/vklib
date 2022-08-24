@@ -96,6 +96,7 @@ t_header* get_header(const char* str) {
 * Parsers (Domain, Path, Port)
 \*-------------------------------------------------------------------------*/
 const char* parse_domain_name(const char* url) {
+	TIMER_START();
 	char* domain_name = (char*)malloc(strlen(url) + 1);
 	strcpy(domain_name, url);
 
@@ -115,10 +116,12 @@ const char* parse_domain_name(const char* url) {
 		*path = '\0';
 	}
 
+	TIMER_END();
 	return domain_name;
 }
 
 const char* parse_path(const char* url) {
+	TIMER_START();
 	char* path = (char*)malloc(strlen(url) + 1);
 	strcpy(path, url);
 
@@ -130,13 +133,16 @@ const char* parse_path(const char* url) {
 
 	char* domain_name = strchr(path, '/');
 	if (domain_name != NULL) {
+		TIMER_END();
 		return domain_name;
 	} else {
+		TIMER_END();
 		return "/";
 	}
 }
 
 int get_port(const char* url) {
+	TIMER_START();
 	char* port_number = (char*)malloc(strlen(url) + 1);
 	strcpy(port_number, url);
 
@@ -153,8 +159,10 @@ int get_port(const char* url) {
 		if (path != NULL) {
 			*path = '\0';
 		}
+		TIMER_END();
 		return atoi(port_number);
 	} else {
+		TIMER_END();
 		return 80;
 	}
 }
@@ -165,6 +173,7 @@ int get_port(const char* url) {
 	* @return The response body or nil and error message if unsuccessful.
 */
 int request_get(lua_State* L) {
+	TIMER_START();
 	const char* url = luaL_checkstring(L, 1);
 
 	#ifdef _WIN32
@@ -307,10 +316,6 @@ int request_get(lua_State* L) {
 		line = strtok(NULL, "\r\n");
 	} while (line != NULL);
 
-	// lua_pushnil(L);
-	// lua_pushstring(L, "not implemented");
-	// return 2;
-
 	if (body == NULL) {
 		lua_pushnil(L);
 		lua_pushstring(L, "Could not get response body.");
@@ -336,6 +341,8 @@ int request_get(lua_State* L) {
 	free(headers_array);
 	free(headers);
 	free(body);
+
+	TIMER_END();
 
 	return 1;
 }

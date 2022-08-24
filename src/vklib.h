@@ -16,8 +16,15 @@
 #include <time.h>
 #include <signal.h>
 
-#define TIMER_START() clock_t start = clock()
-#define TIMER_END() ({ clock_t end = clock(); double elapsed = (double)(end - start) / CLOCKS_PER_SEC; elapsed; printf("ms: %d, nsec: %d\n", (int)(elapsed * 1000), (int)(elapsed * 1000000)); })
+#define TIME_MONITORING
+
+#ifdef TIME_MONITORING
+#define TIMER_START() clock_t start = clock();
+#define TIMER_END() printf("[%s] ms: %.2f | ns: %.2f\n", __FUNCTION__, (double)(clock() - start) / CLOCKS_PER_SEC * 1000, (double)(clock() - start) * 1000000 / CLOCKS_PER_SEC);
+#else
+#define TIMER_START()
+#define TIMER_END()
+#endif
 
 VKLIB_API int luaopen_vklib(lua_State *L);
 
