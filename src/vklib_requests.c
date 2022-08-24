@@ -20,12 +20,70 @@
 
 #define BUFFER_SIZE 10240
 
+/*-------------------------------------------------------------------------*\
+* Structures
+\*-------------------------------------------------------------------------*/
+typedef struct t_header {
+	char* key;
+	char* value;
+} t_header;
+
+/*-------------------------------------------------------------------------*\
+* Helpers
+\*-------------------------------------------------------------------------*/
 void win_cleanup() {
 #ifdef _WIN32 // Windows
 	WSACleanup();
 #endif
 }
 
+t_header* get_header(const char* str) {
+    t_header* header = malloc(sizeof(t_header));
+    header->key = (char*)malloc(strlen(str) + 1);
+    header->value = (char*)malloc(strlen(str) + 1);
+    
+    header->key[0] = '\0';
+    header->value[0] = '\0';
+    
+    char seperator_found = 0;
+    char key_found = 0;
+    int len = strlen(str);
+    
+    for (int i = 0; i < len; i++) {
+        char c = str[i];
+        if (c == '{' || c == '}') {  // we don't want json for http headers
+            return NULL;
+        } else if (c == ':' && key_found == 0) { // key has been found
+            key_found = 1;
+            i = i + 1;
+            continue;
+        }
+        
+        if (key_found == 0) { // we want to find the key
+            header->key[i] = c;
+            header->key[i + 1] = '\0';
+        } else {
+            int idx = i - strlen(header->key) - 2;
+            header->value[idx] = c;
+            header->value[idx + 1] = '\0';
+            
+            if (c == '\n') {
+                break;
+            }
+        }
+    }
+    
+    if (header->key == NULL || header->value == NULL) {
+		printf("Error: header key or value is null\n");
+        return NULL;
+	}
+    
+    return header;
+}
+
+/*-------------------------------------------------------------------------*\
+* Parsers (Domain, Path, Port)
+\*-------------------------------------------------------------------------*/
 const char* parse_domain_name(const char* url) {
 	char* domain_name = (char*)malloc(strlen(url) + 1);
 	strcpy(domain_name, url);
@@ -88,40 +146,6 @@ int get_port(const char* url) {
 	} else {
 		return 80;
 	}
-}
-
-int is_key_value(const char* line) {
-	char* key = (char*)malloc(strlen(line) + 1);
-	char* value = (char*)malloc(strlen(line) + 1);
-	char* separator = ':';
-
-	int separator_found = 0;
-	int key_found = 0;
-	for (int i = 0; i < strlen(line); i++) {
-		char c = line[i];
-		if (c == '{' || c == '}') {
-			return 0;
-		}
-
-		if (c == ':') {
-			key_found = 1;
-		}
-		
-		if (key_found == 1) {
-			value[i] = c;
-			if (c == '\n') {
-				break;
-			}
-		} else {
-			key[i] = c;
-		}
-	}
-
-	char* output = (char*)malloc(strlen(key) + strlen(value) + 1);
-	strcpy(output, key);
-	strcat(output, value);
-
-	return 1;
 }
 
 /*
@@ -228,16 +252,17 @@ int request_get(lua_State* L) {
 			break;
 		}
 
-		if (is_key_value(line) == 0) {
+		t_header* header = get_header(line);
+		if (header == NULL) {
 			is_header = 0;
 		}
+		free(header);
 
 		if (is_header) {
 			header_length += strlen(line) + 3;
 			if (header_length > strlen(headers)) {
 				headers = (char*)realloc(headers, header_length);
 			}
-			
 			strcat(headers, line);
 			strcat(headers, "\r\n");
 			headers[header_length - 1] = '\0';
@@ -254,6 +279,10 @@ int request_get(lua_State* L) {
 
 		line = strtok(NULL, "\r\n");
 	} while (line != NULL);
+
+	// lua_pushnil(L);
+	// lua_pushstring(L, "not implemented");
+	// return 2;
 
 	if (body == NULL) {
 		lua_pushnil(L);
