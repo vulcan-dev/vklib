@@ -8,14 +8,17 @@ project "vklib"
     objdir "build/obj"
     architecture "x86_64"
 
-    libdirs "dep/lua/lib"
-    includedirs { "dep/lua/include", "dep/sqlite/include" }
+    libdirs { "dep/lua/lib", "dep/mongodb/lib" }
+    includedirs { "dep/lua/include", "dep/sqlite/include", "dep/mongodb/include" }
 
-    links { "lua", "ws2_32" }
+    links { "lua", "ws2_32", "mongoc-1.0" }
 
-    files { "src/**.h", "src/**.c" }
+    files { 
+        "src/**.h", "src/**.c",
+        -- "dep/mongodb/src/**.h", "dep/mongodb/src/**.c",
+    }
 
-    defines { "VKLIB_FILESYSTEM", "VKLIB_REQUESTS", "VKLIB_SQLITE" }
+    defines { "VKLIB_FILESYSTEM", "VKLIB_REQUESTS", "VKLIB_SQLITE", "VKLIB_MONGODB" }
 
     filter "configurations:Release"
         defines { "NDEBUG" }

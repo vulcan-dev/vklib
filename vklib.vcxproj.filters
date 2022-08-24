@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="dep">
+      <UniqueIdentifier>{BE69880B-2A73-887C-B3EE-9E7C1FF7937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dep\mongodb">
+      <UniqueIdentifier>{F3C0CCC3-5F76-45B9-E86A-3F90541F3CBD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dep\mongodb\src">
+      <UniqueIdentifier>{8AC0756D-F64B-E331-FF5C-66266B673F32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\dirent.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vklib.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vklib_compat.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vklib_fs.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vklib_requests.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vklib_sqlite.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vklib_mongo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\vklib.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_compat.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_fs.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_requests.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_sqlite.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vklib_mongo.c" />
+  </ItemGroup>
+</Project>
