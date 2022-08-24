@@ -3,6 +3,8 @@
 #include "vklib_requests.h"
 #include "vklib_sqlite.h"
 
+#include "sqlite3.h"
+
 static const luaL_Reg fs_funcs[] = {
     { "get_cwd", fs_getcwd },
     { "create_dir", fs_create_dir },
@@ -17,7 +19,9 @@ static const luaL_Reg request_funcs[] = {
 };
 
 static const luaL_Reg sqlite_funcs[] = {
-    { "connect", sqlite_connect },
+    { "open", sqlite_open },
+    { "close", sqlite_close },
+    { "exec", sqlite_exec },
     { NULL, NULL }
 };
 
