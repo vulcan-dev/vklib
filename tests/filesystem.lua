@@ -24,6 +24,17 @@ else
     print("created file")
 end
 
+print(vklib.fs.file_exists("./tests/filesystem/test.txt"))
+print(vklib.fs.dir_exists("./tests/filesystem/"))
+
+success, err = vklib.fs.remove_file("./tests/filesystem/test.txt")
+if not success then
+    print(err)
+    return
+else
+    print("removed file")
+end
+
 success, err = vklib.fs.remove_dir("tests/filesystem", true)
 if not success then
     print(err)

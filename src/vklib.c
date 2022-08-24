@@ -8,6 +8,9 @@
 static const luaL_Reg fs_funcs[] = {
     { "get_cwd", fs_getcwd },
     { "create_dir", fs_create_dir },
+    { "dir_exists", fs_dir_exists },
+    { "remove_file", fs_remove_file },
+    { "file_exists", fs_file_exists },
     { "remove_dir", fs_remove_dir },
     { "create_file", fs_create_file },
     { NULL, NULL }
