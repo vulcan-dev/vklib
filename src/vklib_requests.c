@@ -213,13 +213,16 @@ int request_get(lua_State* L) {
 		return 2;
 	}
 
-	// char* headers = (char*)malloc(bytes_received + 1);
 	char* headers = (char*)malloc(1);
 	char* body = (char*)malloc(1);
+
+	headers[0] = '\0';
+	body[0] = '\0';
 
 	char* line = strtok(NULL, "\r\n");
 	int is_header = 1;
 	int header_length = 0;
+	int body_length = 0;
 	do {
 		if (line == NULL) {
 			break;
@@ -230,19 +233,23 @@ int request_get(lua_State* L) {
 		}
 
 		if (is_header) {
-			header_length += strlen(line) + 2;
+			header_length += strlen(line) + 3;
 			if (header_length > strlen(headers)) {
-				headers = (char*)realloc(headers, header_length+1);
+				headers = (char*)realloc(headers, header_length);
 			}
-
+			
 			strcat(headers, line);
 			strcat(headers, "\r\n");
+			headers[header_length - 1] = '\0';
 		} else {
-			if (bytes_received - header_length > strlen(body)) {
-				body = (char*)realloc(body, bytes_received - header_length + 1);
+			body_length += strlen(line) + 3;
+			if (body_length > strlen(body)) {
+				body = (char*)realloc(body, body_length);
 			}
+
 			strcat(body, line);
 			strcat(body, "\r\n");
+			body[body_length - 1] = '\0';
 		}
 
 		line = strtok(NULL, "\r\n");
@@ -259,11 +266,14 @@ int request_get(lua_State* L) {
 	lua_pushstring(L, response_code);
 	lua_settable(L, -3);
 	lua_pushstring(L, "body");
-	lua_pushstring(L, body);
+	lua_pushlstring(L, body, strlen(body));
 	lua_settable(L, -3);
 	lua_pushstring(L, "headers");
-	lua_pushstring(L, headers);
+	lua_pushlstring(L, headers, strlen(headers));
 	lua_settable(L, -3);
+
+	free(headers);
+	free(body);
 
 	return 1;
 }
