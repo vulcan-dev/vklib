@@ -1,4 +1,4 @@
-MONGODB_ENABLED = false
+MONGODB_ENABLED = true
 
 workspace "vklib"
     configurations { "Debug", "Release" }
@@ -26,7 +26,8 @@ project "vklib"
         removefiles { "src/vklib_mongo/**.h", "src/vklib_mongo/**.c" }
     end
 
-    defines { "VKLIB_FILESYSTEM", "VKLIB_REQUESTS", "VKLIB_SQLITE" }
+    -- defines { "VKLIB_FILESYSTEM", "VKLIB_REQUESTS", "VKLIB_SQLITE" }
+    defines { "VKLIB_FILESYSTEM", "VKLIB_MONGO" }
 
     filter "configurations:Release"
         defines { "NDEBUG" }

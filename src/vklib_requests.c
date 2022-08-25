@@ -172,6 +172,16 @@ int get_port(const char* url) {
     * @param url The url to make the request to.
 	* @return The response body or nil and error message if unsuccessful.
 */
+typedef struct t_response {
+	char* body;
+	int status_code;
+	t_header_arr* headers;
+} t_response;
+
+t_response* threaded_get(const char* url) {
+
+}
+
 int request_get(lua_State* L) {
 	TIMER_START();
 	const char* url = luaL_checkstring(L, 1);

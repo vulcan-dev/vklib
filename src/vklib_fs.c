@@ -183,7 +183,6 @@ int fs_create_file(lua_State* L) {
     const char* path = luaL_checkstring(L, 1);
     const char* contents = luaL_optstring(L, 2, "");
 
-    // Check to see if the directory exists, if not, create it
     char* dir = malloc(strlen(path) + 1);
     if (dir == NULL) {
         lua_pushnil(L);
@@ -216,18 +215,6 @@ int fs_create_file(lua_State* L) {
     fwrite(contents, 1, strlen(contents), file);
     fclose(file);
 
-    // FILE* file = fopen(path, mode);
-    // if (file == NULL) {
-    //     file = fopen(path, "w");
-    //     if (file == NULL) {
-    //         lua_pushnil(L);
-    //         lua_pushstring(L, get_error("fopen", errno));
-    //         return 2;
-    //     }
-    // }
-    // fwrite(contents, 1, strlen(contents), file);
-    // fclose(file);
-
     lua_pushboolean(L, 1);
     return 1;
 }
@@ -258,5 +245,38 @@ int fs_file_exists(lua_State* L) {
     int exists = is_file(path);
 
     lua_pushboolean(L, exists);
+    return 1;
+}
+
+/*
+    * Reads a file
+    * @param path - the path of the file to read
+    * @return the contents of the file if successful, nil & error message otherwise
+*/
+int fs_read_file(lua_State* L) {
+    const char* path = luaL_checkstring(L, 1);
+    FILE* file = fopen(path, "r");
+    if (file == NULL) {
+        lua_pushnil(L);
+        lua_pushstring(L, get_error("fopen", errno));
+        return 2;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char* contents = malloc(size + 1);
+    if (contents == NULL) {
+        lua_pushnil(L);
+        lua_pushstring(L, get_error("malloc", errno));
+        return 2;
+    }
+    fread(contents, 1, size, file);
+    fclose(file);
+    contents[size] = '\0';
+
+    lua_pushstring(L, contents);
+    free(contents);
     return 1;
 }
