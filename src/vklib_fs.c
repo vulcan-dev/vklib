@@ -183,34 +183,36 @@ int fs_create_file(lua_State* L) {
     const char* path = luaL_checkstring(L, 1);
     const char* contents = luaL_optstring(L, 2, "");
 
-    char* dir = malloc(strlen(path) + 1);
-    if (dir == NULL) {
-        lua_pushnil(L);
-        lua_pushstring(L, get_error("malloc", errno));
-        return 2;
+    // get path, filename and extension
+    char* path_copy = strdup(path);
+    char* filename = (char*)malloc(strlen(path) + 1);
+    char* slash = strrchr(path_copy, '/');
+    if (slash == NULL) {
+        strcpy(filename, path_copy);
+        strcpy(path_copy, ".");
+    } else {
+        strcpy(filename, slash + 1);
+        *slash = '\0';
     }
-    strcpy(dir, path);
-    char* last_slash = strrchr(dir, '/');
-    if (last_slash != NULL) {
-        *last_slash = '\0';
-        if (!is_file(dir)) {
-            if (_compat_mkdir(dir, S_IWUSR) != 0) {
-                lua_pushnil(L);
-                lua_pushstring(L, get_error("mkdir", errno));
-                return 2;
-            }
+    char* dir = (char*)malloc(strlen(path_copy) + 1);
+    strcpy(dir, path_copy);
+    free(path_copy);
+
+    struct stat buf;
+    if (stat(dir, &buf) != 0) {
+        if (_compat_mkdir(dir, S_IWUSR) != 0) {
+            lua_pushnil(L);
+            lua_pushstring(L, get_error("mkdir", errno));
+            return 2;
         }
     }
     free(dir);
 
     FILE* file = fopen(path, "w");
     if (file == NULL) {
-        file = fopen(path, "w");
-        if (file == NULL) {
-            lua_pushnil(L);
-            lua_pushstring(L, get_error("fopen", errno));
-            return 2;
-        }
+        lua_pushnil(L);
+        lua_pushstring(L, get_error("fopen", errno));
+        return 2;
     }
     fwrite(contents, 1, strlen(contents), file);
     fclose(file);
