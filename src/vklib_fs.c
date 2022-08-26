@@ -280,3 +280,31 @@ int fs_read_file(lua_State* L) {
     free(contents);
     return 1;
 }
+
+/*
+    * Returns a table of files in a directory
+    * @param path - the path of the directory to get files from
+    * @return a table of files if successful, nil & error message otherwise
+    * @note This function is not recursive
+*/
+int fs_get_files(lua_State* L) {
+    const char* path = luaL_checkstring(L, 1);
+    DIR* dir = opendir(path);
+    if (dir == NULL) {
+        lua_pushnil(L);
+        lua_pushstring(L, get_error("opendir", errno));
+        return 2;
+    }
+    struct dirent* entry;
+    lua_newtable(L);
+    int i = 1;
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_name[0] != '.') {
+            lua_pushstring(L, entry->d_name);
+            lua_rawseti(L, -2, i);
+            i++;
+        }
+    }
+    closedir(dir);
+    return 1;
+}

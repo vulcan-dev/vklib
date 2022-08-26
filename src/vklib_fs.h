@@ -12,5 +12,6 @@ int fs_create_file(lua_State* L);
 int fs_remove_file(lua_State* L);
 int fs_file_exists(lua_State* L);
 int fs_read_file(lua_State* L);
+int fs_get_files(lua_State* L);
 
 #endif

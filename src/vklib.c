@@ -11,6 +11,7 @@ static const luaL_Reg fs_funcs[] = {
     { "remove_dir", fs_remove_dir },
     { "create_file", fs_create_file },
 	{ "read_file", fs_read_file },
+	{ "get_files", fs_get_files },
     { NULL, NULL }
 };
 #endif
