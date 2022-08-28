@@ -38,11 +38,15 @@
 * Compatibility functions
 \*-------------------------------------------------------------------------*/
 int _compat_mkdir(const char* path, int mode) {
+    #ifdef _WIN32
     if (mkdir(path) == 0) {
         return 0;
     } else {
         return -1;
     }
+    #else
+    return mkdir(path, mode);
+    #endif
 }
 
 char is_file(const char* path) {
