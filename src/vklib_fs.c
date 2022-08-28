@@ -4,13 +4,14 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/stat.h>
+#include <string.h>
 
 #ifdef _WIN32 // Windows
 #include "dirent.h"
 #include <direct.h>
 #include <windows.h>
 #include <tchar.h>
-#include <string.h>
 
 #define getcwd _getcwd
 #define mkdir(path) _mkdir(path)
@@ -19,7 +20,6 @@
 #else // Linux
 #include <dirent.h>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <sys/types.h>
 #endif
 
