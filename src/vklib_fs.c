@@ -8,7 +8,6 @@
 #ifdef _WIN32 // Windows
 #include "dirent.h"
 #include <direct.h>
-#include <sys/stat.h>
 #include <windows.h>
 #include <tchar.h>
 #include <string.h>
@@ -20,6 +19,8 @@
 #else // Linux
 #include <dirent.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif
 
 /*-------------------------------------------------------------------------*\
