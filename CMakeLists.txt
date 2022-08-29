@@ -18,7 +18,7 @@ if (WIN32)
         src/vklib.c src/vklib.h
         src/vklib_fs.c src/vklib_fs.h
         src/vklib_compat.c src/vklib_compat.h
-        src/dirent.h
+        src/dirent_compat.h
     )
 else()
     set(SOURCES
