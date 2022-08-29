@@ -1,4 +1,5 @@
 build/
+cmake-build/
 kissmp_test/
 .vs
 .vscode
