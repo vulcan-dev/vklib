@@ -36,7 +36,7 @@
 /*-------------------------------------------------------------------------*\
 * Compatibility functions
 \*-------------------------------------------------------------------------*/
-int _compat_mkdir(const char* path, int mode) {
+int _compat_mkdir(const char* path, struct stat* st) {
     #ifdef _WIN32
     if (mkdir(path) == 0) {
         return 0;
@@ -44,7 +44,12 @@ int _compat_mkdir(const char* path, int mode) {
         return -1;
     }
     #else
-    return mkdir(path, mode);
+        if (stat(path, &st) == -1) {
+            mkdir(path, 0700);
+            return 0;
+        } else {
+            return -1;
+        }
     #endif
 }
 
@@ -119,6 +124,7 @@ int fs_create_dir(lua_State* L) {
     const char* path = luaL_checkstring(L, 1);
 	char overwrite = lua_toboolean(L, 2);
 
+    struct stat st = {0};
     if (overwrite) {
         if (_compat_rmdir(path, 1) != 0) {
             if (errno != ENOENT) {
@@ -128,13 +134,13 @@ int fs_create_dir(lua_State* L) {
             }
         }
         
-        if (_compat_mkdir(path, S_IWUSR) != 0) {
+        if (_compat_mkdir(path, &st) != 0) {
             lua_pushnil(L);
             lua_pushstring(L, get_error("mkdir", errno));
             return 2;
         }
     } else {
-        if (_compat_mkdir(path, S_IWUSR) != 0) {
+        if (_compat_mkdir(path, &st) != 0) {
             lua_pushnil(L);
             lua_pushstring(L, get_error("mkdir", errno));
             return 2;
