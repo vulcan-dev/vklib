@@ -1,4 +1,5 @@
-local vklib = assert(package.loadlib("build/bin/vklib.dll", "luaopen_vklib"))()
+-- local vklib = assert(package.loadlib("cmake-build/Debug/vklib.dll", "luaopen_vklib"))()
+local vklib = assert(require("vklib"))
 
 local cwd, err = vklib.fs.get_cwd()
 if not cwd then
