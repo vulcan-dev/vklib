@@ -8,8 +8,7 @@
 #include <string.h>
 
 #ifdef _WIN32 // Windows
-#include "dirent.h"
-#include <direct.h>
+#include "dirent_compat.h"
 #include <windows.h>
 #include <tchar.h>
 
